@@ -1,0 +1,405 @@
+#+TITLE: Tom's Emacs Config
+#+AUTHOR: Tom Ratford
+#+PROPERTY: header-args :comments link :tangle ~/.emacs.d/init.el :tangle-mode (identity #o444)
+
+* Basic Settings
+
+These are the basic settings which I want active for all of my emacs. Firstly we obviously need MELPA and use-package. 
+
+#+begin_src elisp
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+  (package-initialize)
+#+end_src
+  
+Now we bootstrap `use-package` and load it. `use-package-always-ensure t` Ensures we always have every package installed when we load it.
+  
+#+begin_src elisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (eval-when-compile
+    (require 'use-package))
+
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+#+end_src
+
+Now we can dance.
+
+** Customfile
+   
+Not a fan of customise variable, it clogs up and makes your init.el look awful.
+let it be gone (or hidden).
+Whilst we're here lets just make themes safe (I only load 2 anyways)
+
+#+begin_src elisp
+  (setq custom-file "~/.emacs.d/custom.el")
+  (setq custom-safe-themes t)
+#+end_src
+   
+** Autosaving
+
+Lets put backups and auto-saves somewhere smart.
+
+#+begin_src elisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+end_src
+  
+** Yes, no, maybe?
+
+I think y/n will suffice
+
+#+begin_src elisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+** Delete selection upon type
+
+Ensures sanity
+
+#+begin_src elisp
+  (delete-selection-mode)
+#+end_src
+
+** Startup messages
+
+I'm going to replace the startup screens with dashboard.el, so this is irrelevant
+
+#+begin_src elisp
+  (setq ihibit-startup-screen t)
+#+end_src
+
+** Frame title
+
+I think we can make the frame look cooler
+#+begin_src elisp
+  (setq frame-title-format '("" "%b" " / Emacs"))
+#+end_src
+
+** No cursor in inactive windows
+
+#+begin_src elisp
+  (setq cursor-in-non-selected-windows nil)
+#+end_src
+
+** Set default modes
+   
+#+begin_src elisp
+  (setq initial-major-mode 'text-mode)
+  (setq default-major-mode 'text-mode)
+#+end_src
+
+** Font lock/type settings
+
+Not really sure what these do but they seem fine?
+
+#+begin_src elisp
+  ;;Moderate font lock
+  (setq font-lock-maximum-decoration nil)
+
+  ;; No limit on font lock
+  (setq font-lock-maximum-size nil)
+
+  ;; No line break space points
+  (setq auto-fill-mode nil)
+
+  ;; Fill column at 80
+  (setq fill-column 80)
+#+end_src
+
+** No confirmation for visiting files that dont exist
+
+#+begin_src elisp
+  (setq confirm-nonexistent-file-or-buffer nil)
+#+end_src
+ 
+** No tabs
+   
+#+begin_src elisp
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 2)
+#+end_src
+   
+** Parens
+#+begin_src elisp
+  (show-paren-mode)
+  (setq show-paren-style 'mixed)
+  (electric-pair-mode 1)
+#+end_src
+
+** Don't ask me to kill
+Pressing return is redundant when killing a saved buffer (in my opinion). Lets make it so it doesn't ask me to confirm
+
+#+begin_src elisp
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+#+end_src
+
+* Global Packages
+
+These are packages which fit into 2 categories
+ + aren't a programming language
+ + are used by other modes
+   
+** Org
+Org is probably the best example of the main description. The below is mainly taken from the [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el][systemcrafters init.el]].
+
+Define a function to use as a hook when we enter any org mode file
+
+#+begin_src elisp
+  (defun efs/org-mode-setup ()
+    (org-indent-mode)) ;;indent the file in a qt way
+#+end_src
+
+=use-package= to setup our new org hook. As well as set the ephasis marker and also 
+
+#+begin_src elisp
+    (use-package org
+      :hook (org-mode . efs/org-mode-setup)
+      :config
+      (setq org-hide-emphasis-markers t)
+      (setq org-ellipsis " ◢")
+      (set-face-attribute 'org-code nil
+                          :family "Victor Mono" :inherit 'highlight))
+      ;(set-face-attribute 'org-code nil
+      ;                    :family "Victor Mono" :weight 'regular :slant 'normal :box '(:line-width -1)))
+#+end_src
+
+Setup bullet points instead of =*=
+
+#+begin_src elisp
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("●" "▶" "◾" "◎" "▷" "▣" "◈" "▪")))
+#+end_src
+
+** Counsel/Ivy/Swiper
+#+begin_src elisp
+  (use-package counsel
+    :config
+    (ivy-mode 1)
+    (setq use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) "))
+#+end_src
+** Avy
+This is a god damn GAME CHANGER
+:TODO: Make this work really well, read the docs more
+#+begin_src elisp
+  (use-package avy)
+#+end_src
+** Magit
+I have little experience with magit so. Watch this space.
+
+#+begin_src elisp
+  (use-package magit)
+#+end_src
+
+** Multiple Cursors
+I like the rectangle mode in emacs, but I do miss multiple cursors in the way they function like in vscode. This package doesnt really to this, but it'll do.
+
+#+begin_src elisp
+  (use-package multiple-cursors
+    :bind (("C-c m c" . 'mc/edit-lines)
+           ("C-c m s" . 'mc/mark-next-like-this)
+           ("C-c m r" . 'mc/mark-previous-like-this)
+           ("C-c m a" . 'mc/mark-all-like-this)))
+#+end_src
+ 
+** Yasnippet
+:TODO: This one requires a lot more setup than previous ones. Most likely a bigger task.
+First lets load the main package, and then a few supplementary snippet packages
+
+#+begin_src elisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1))
+#+end_src
+
+*** Haskell
+#+begin_src elisp
+    (use-package haskell-snippets
+      :after yasnippet)
+#+end_src
+
+** Expand Region
+This package makes it so that you incrementally expand your marker based on what is currently selected.
+ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand by first selecting ~abc~, then ~abc efg~, then ~"abc efg"~ then ~("abc efg")~, finally ~test("abc efg")~.
+
+#+begin_src elisp
+  (use-package expand-region
+    :bind ("C--" . er/expand-region))
+#+end_src
+* Programming Language
+** Eglot
+This is an LSP for emacs, aimed to be simple to setup, and who doesn't love that!
+
+#+begin_src elisp
+  (use-package eglot)
+#+end_src
+
+** LSP-mode
+
+:TODO: Last time I tried to do this resulting in pain, and suffering, but I also don't especially like eglot
+
+** Haskell Mode
+
+#+begin_src elisp
+  (use-package haskell-mode)
+#+end_src
+
+** Julia Mode
+** Racket
+#+begin_src elisp
+  (use-package racket-mode
+    :config
+    (setq racket-program "/Applications/Racket v8.3/bin/racket"))
+#+end_src
+* Appearance
+** Nano theme
+I use =nano-theme= and =nano-modeline= because they're bloody gorgeous.
+*** Fonts
+First we load the fonts recommended from a reddit post/[[https://gist.github.com/rougier/b15fb6e98fadb6580958b1733659027b][github gist]]
+
+#+begin_src elisp
+  (set-face-attribute 'default nil
+                      :family "Roboto Mono" :weight 'light :height 140)
+  (set-face-attribute 'bold nil
+                      :family "Roboto Mono" :weight 'regular)
+  (set-face-attribute 'italic nil
+                      :family "Victor Mono" :weight 'semilight :slant 'italic)
+  (set-fontset-font t 'unicode
+                    (font-spec :name "Inconsolata" :size 16) nil)
+  (set-fontset-font t '(#xe000 . #xffdd)
+                    (font-spec :name "RobotoMono Nerd Font" :size 12) nil)
+#+end_src
+ 
+*** Theme
+Now we load the =nano-theme= and =nano-modeline= packages
+:TODO: Make it so that we don't have emacs boot in some weird resolution
+
+#+begin_src elisp
+  (use-package nano-theme
+    :config
+    (nano-mode)
+    ;(nano-light)
+    )
+  (use-package nano-modeline
+    :config
+    (nano-modeline-mode))
+#+end_src
+
+**** *!!DEFUNCT!!* See [[Auto-dark]]
+I want to load my themes based on the time of day. Light theme at sunrise and dark at sunset. Thankfully there was a nice [[https://gnu.xyz/auto_theme.html][frenchman]] who did this already in a nice succint way. The below is largely based on his work
+
+#+begin_src elisp :tangle no
+  (require 'solar)
+
+  (setq calendar-latitude 51.4)
+  (setq calendar-longitude -0.3)
+  (setq calendar-location-name "Twickenham, UK")
+
+   (defun md/load-dark-theme ()
+     (setq bool-light-theme nil)
+     (nano-dark))
+
+   (defun md/load-light-theme ()
+     (setq bool-light-theme t)
+     (nano-light))
+
+     ;; --- Sunset-sunrise
+   (defun frac-to-time (f)
+     "Convert fractional time F to (HH MM)."
+     (let ((l (cl-floor f)))
+     (list (cl-first l)
+ 	  (floor (* 60 (cl-second l))))))
+
+   (defun md/diary-sunrise ()
+     "Get clean sunrise time string from Emacs' `sunset-sunrise'`."
+     (frac-to-time (cl-first (cl-first (solar-sunrise-sunset (calendar-current-date))))))
+
+   (defun md/diary-sunset ()
+     "Get clean sunset time string from Emacs' `sunset-sunrise'`."
+     (frac-to-time (cl-first (cl-second (solar-sunrise-sunset (calendar-current-date))))))
+
+   (defun md/encode-time (time)
+     "Encode TIME into a valid format for `run-at-time'."
+     (let ((hour (car time))
+     (min (car (last time))))
+ (format "%s:%s" hour min)))
+
+   (defun md/change-theme-with-timers ()
+     (message "N Λ N O theme timers automatically setup")
+     (run-at-time "00:00" (* 60 60 24) 'md/load-dark-theme)
+     (run-at-time (md/encode-time (md/diary-sunrise)) (* 60 60 24) 'md/load-light-theme)
+     (run-at-time (md/encode-time (md/diary-sunset)) (* 60 60 24) 'md/load-dark-theme))
+
+   (defun md/toggle-theme ()
+     "Toggle between light and dark themes."
+     (interactive)
+     (cond ((eq bool-light-theme nil)
+      (message "N Λ N O light theme")
+      (setq bool-light-theme t)
+      (md/load-light-theme))
+     ((eq bool-light-theme t)
+      (message "N Λ N O dark theme")
+      (setq day-or-night nil)
+      (md/load-dark-theme))
+     (t (message "Toggling theme is not possible."))))
+
+   (md/change-theme-with-timers)
+   ;(add-hook 'emacs-startup-hook 'md/change-theme-with-timers)
+#+end_src
+** Auto-dark
+I've started to learn to love a light mode, especially during the day when I have lots of bright sunlight in my room. There's a neat ol' package called =auto-dark= which does it based off the MacOS theme. This is good because it means if I change my mind and just want dark mode /it just works/
+
+#+begin_src elisp
+  (use-package auto-dark
+    :config
+    (setq auto-dark--allow-osascript t)
+    (setq auto-dark--dark-theme 'nano-dark)
+    (setq auto-dark--light-theme 'nano-light))
+#+end_src
+
+** Other
+*** Menu/tool/scroll bar
+Controversially I use =menu-bar-mode= because it works a lot better on the MacOS port of emacs. However I dont use =tool-bar-mode= nor =scroll-bar-mode= so these can go.
+
+#+begin_src elisp
+  (menu-bar-mode 1)
+  (tool-bar-mode -1)
+  (set-scroll-bar-mode nil)
+#+end_src
+*** Line wrapping
+#+begin_src elisp
+  (global-visual-line-mode 1)
+#+end_src
+*** Line numbers
+Line numbers are obviously a must, but I'm also partial to /not/ having them sometimes. Like in org mode where they kinda make it more confusing. So lets only enable them for /some/ packages. The below is basically copied verbatim from [[https://www.emacswiki.org/emacs/LineNumbers#h5o-1][emacs wiki]].
+
+#+begin_src elisp
+    (use-package display-line-numbers
+      :init
+      (defcustom display-line-numbers-exempt-modes
+        '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode org-mode text-mode markdown-mode package-menu-mode racket-repl-mode eww-mode)
+        "Major modes on which to disable line numbers."
+        :group 'display-line-numbers
+        :type 'list
+        :version "green")
+      :config
+      (setq display-line-numbers 'relative)   
+      (defun display-line-numbers--turn-on ()
+        "Turn on line numbers except for certain major modes.
+  Exempt major modes are defined in `display-line-numbers-exempt-modes'."
+        (unless (or (minibufferp)
+                    (member major-mode display-line-numbers-exempt-modes))
+          (display-line-numbers-mode)))
+      (global-display-line-numbers-mode))
+#+end_src
+
+
