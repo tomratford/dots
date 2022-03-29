@@ -236,18 +236,50 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
     :bind ("C--" . er/expand-region))
 #+end_src
 * Programming Language
-** Eglot
+** LSP
+
+/“Rabbit's clever,"/ said Pooh thoughtfully.
+/"Yes,"/ said Piglet, /"Rabbit's clever."/
+/"And he has Brain."/
+/"Yes,"/ said Piglet, /"Rabbit has Brain."/
+There was a long silence.
+/"I suppose,"/ said Pooh, /"that that's why he never understands anything.”/
+
+*** Eglot
 This is an LSP for emacs, aimed to be simple to setup, and who doesn't love that!
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package eglot)
 #+end_src
 
-** LSP-mode
+*** LSP-mode
 
-:TODO: Last time I tried to do this resulting in pain, and suffering, but I also don't especially like eglot
+:TODO: Last time I tried to do this resulting in pain, and suffering
+
+** Tree-sitter
+
+/“What I like doing best is Nothing."/
+
+/"How do you do Nothing,"/ asked Pooh after he had wondered for a long time.
+
+/"Well, it's when people call out at you just as you're going off to do it, 'What are you going to do, Christopher Robin?' and you say, 'Oh, Nothing,' and then you go and do it./
+
+/It means just going along, listening to all the things you can't hear, and not bothering."/
+
+/"Oh!"/ said Pooh.
+
+#+begin_src elisp
+  (use-package tree-sitter
+    :config
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (use-package tree-sitter-langs
+    :after treesitter)
+#+end_src
 
 ** Haskell Mode
+
+My favourite language *deserves* it's own mode
 
 #+begin_src elisp
   (use-package haskell-mode)
