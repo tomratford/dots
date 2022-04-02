@@ -1,6 +1,7 @@
 #+TITLE: Tom's Emacs Config
 #+AUTHOR: Tom Ratford
 #+PROPERTY: header-args :comments link :tangle ~/.emacs.d/init.el :tangle-mode (identity #o444)
+#+STARTUP: overview
 
 * Basic Settings
 
@@ -158,15 +159,15 @@ Define a function to use as a hook when we enter any org mode file
 =use-package= to setup our new org hook. As well as set the ephasis marker and also 
 
 #+begin_src elisp
-    (use-package org
-      :hook (org-mode . efs/org-mode-setup)
-      :config
-      (setq org-hide-emphasis-markers t)
-      (setq org-ellipsis " ◢")
-      (set-face-attribute 'org-code nil
-                          :family "Victor Mono" :inherit 'highlight))
-      ;(set-face-attribute 'org-code nil
-      ;                    :family "Victor Mono" :weight 'regular :slant 'normal :box '(:line-width -1)))
+  (use-package org
+    :hook (org-mode . efs/org-mode-setup)
+    :config
+    (setq org-hide-emphasis-markers t)
+    (setq org-ellipsis " ◢")
+    (set-face-attribute 'org-code nil
+                        :family "Victor Mono" :inherit 'highlight))
+    ;(set-face-attribute 'org-code nil
+    ;                    :family "Victor Mono" :weight 'regular :slant 'normal :box '(:line-width -1)))
 #+end_src
 
 Setup bullet points instead of =*=
