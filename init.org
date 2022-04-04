@@ -3,6 +3,8 @@
 #+PROPERTY: header-args :comments link :tangle ~/.emacs.d/init.el :tangle-mode (identity #o444)
 #+STARTUP: overview
 
+:TODO: Replace ~:config~ instances with ~:custom~ and ~:custom-faces~
+
 * Basic Settings
 
 These are the basic settings which I want active for all of my emacs. Firstly we obviously need MELPA and use-package. 
@@ -180,8 +182,33 @@ Setup bullet points instead of =*=
     (org-bullets-bullet-list '("●" "▶" "◾" "◎" "▷" "▣" "◈" "▪")))
 #+end_src
 
-** Counsel/Ivy/Swiper
+** Dired
+Dired is great, but I like to use the
+** Autocompletes
+I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference.
+*** Icomplete
 #+begin_src elisp
+(icomplete-mode 1)
+#+end_src
+*** Helm
+#+begin_src elisp :tangle no
+  (use-package helm-core)
+    
+  (use-package helm
+    :requires helm-core
+    :demand t
+    :init
+    :bind (("C-x b" . helm-buffers-list)
+           ("M-x" . helm-M-x)
+           ("C-x r b" . helm-bookmarks)
+           ("C-x C-f" . helm-find-files)
+           ("C-h a" . helm-apropos)
+           ("M-y" . helm-show-kill-ring))
+    :config
+    (helm-mode 1))
+#+end_src
+*** Counsel/Ivy/Swiper
+#+begin_src elisp :tangle no
   (use-package counsel
     :config
     (ivy-mode 1)
@@ -236,6 +263,7 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
   (use-package expand-region
     :bind ("C--" . er/expand-region))
 #+end_src
+
 * Programming Language
 ** LSP
 
