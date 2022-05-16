@@ -125,7 +125,6 @@ Not really sure what these do but they seem fine?
    
 #+begin_src elisp
   (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 2)
 #+end_src
    
 ** Parens
@@ -142,12 +141,16 @@ Pressing return feels pointless when killing a saved buffer (in my opinion). Let
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 #+end_src
 
+** Column no.
+#+begin_src elisp
+  (column-number-mode 1)
+#+end_src
 * Global Packages
 
 These are packages which fit into 2 categories
  + aren't a programming language
  + are used by other modes
-   
+
 ** Org
 Org is probably the best example of the main description. The below is mainly taken from the [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el][systemcrafters init.el]].
 
@@ -155,10 +158,11 @@ Define a function to use as a hook when we enter any org mode file
 
 #+begin_src elisp
   (defun efs/org-mode-setup ()
-    (org-indent-mode)) ;;indent the file in a qt way
+    (org-indent-mode)
+    (variable-pitch-mode)) ;;indent the file in a qt way
 #+end_src
 
-=use-package= to setup our new org hook. As well as set the ephasis marker and also 
+~use-package~ to setup our new org hook. As well as set the ephasis marker and also 
 
 #+begin_src elisp
   (use-package org
@@ -167,7 +171,7 @@ Define a function to use as a hook when we enter any org mode file
     (setq org-hide-emphasis-markers t)
     (setq org-ellipsis " ◢")
     (set-face-attribute 'org-code nil
-                        :family "Victor Mono" :inherit 'highlight))
+                         :inherit 'highlight))
 #+end_src
 
 Setup bullet points instead of =*=
@@ -177,7 +181,12 @@ Setup bullet points instead of =*=
     :after org
     :hook (org-mode . org-bullets-mode)
     :custom
-    (org-bullets-bullet-list '("●" "▶" "◾" "◎" "▷" "▣" "◈" "▪")))
+    (org-bullets-bullet-list '("●" "▶" "■" "◎" "▷" "▣" "◈" "▪")))
+#+end_src
+
+*** Org-roam
+#+begin_src elisp :tangle no
+  (use-package org-roam)
 #+end_src
 
 ** All the icons
@@ -192,7 +201,25 @@ Setup bullet points instead of =*=
 #+begin_src elisp
   (put 'dired-find-alternate-file 'disabled nil)
 #+end_src
-** Autocompletes
+** Projectile
+Load projectile
+#+begin_src elisp
+  (use-package projectile
+    :custom
+    (projectile-project-search-path '("~/Projects" ("~/Exercism/" . 2)))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :config
+    (projectile-mode +1)
+    ;; Create custom projectile project checks for ~swift~ packages
+    (projectile-register-project-type 'swift '("Package.swift")
+                                      :project-file "Package.swift"
+                                      :compile "swift build"
+                                      :test "swift test"
+                                      :run "swift run"
+                                      :test-suffix "Tests"))
+#+end_src
+** Autocomplete 
 I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference so I'm trying more every so often.
 
 *** Icomplete
@@ -200,24 +227,32 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
 (icomplete-mode 1)
 #+end_src
 *** Helm
-#+begin_src elisp
-      (use-package helm-core)
+#+begin_src elisp :tangle no
+  (use-package helm-core)
 
-      (use-package helm
-        :requires helm-core
-        :demand t
-        :custom
-        (helm-display-header-line nil "remove 'hit C-j for hit1, hit2...' text")
-        (helm-allow-mouse 1 "use mouse in helm")
-        :bind (("C-x b" . helm-buffers-list)
-               ("M-x" . helm-M-x)
-               ("C-x r b" . helm-bookmarks)
-               ("C-x C-f" . helm-find-files)
-               ("C-h a" . helm-apropos)
-               ("M-y" . helm-show-kill-ring))
-        :config
-        (helm-mode 1)
-        (setq helm-display-function 'helm-display-buffer-in-own-frame))
+  (use-package helm
+    :requires helm-core
+    :demand t
+    :custom
+    ;;(helm-display-header-line nil "remove 'hit C-j for hit1, hit2...' text")
+    (helm-display-function 'helm-display-buffer-in-own-frame)
+    (helm-allow-mouse 1 "use mouse in helm")
+    (helm-mode-fuzzy-match t "fuzzy finding #1")
+    (helm-completion-in-region-fuzzy-match t "fuzzy finding #2")
+    (helm-display-buffer-reuse-frame t)
+    :bind (("C-x b" . helm-buffers-list)
+           ("M-x" . helm-M-x)
+           ("C-x r b" . helm-bookmarks)
+           ("C-x C-f" . helm-find-files)
+           ("C-h a" . helm-apropos)
+           ("M-y" . helm-show-kill-ring))
+    :config
+    (helm-mode 1))
+
+  (use-package helm-projectile
+    :requires projectile
+    :config
+    (helm-projectile-on))
 #+end_src
 *** Counsel/Ivy/Swiper
 #+begin_src elisp :tangle no
@@ -226,6 +261,12 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
     (ivy-mode 1)
     (setq use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) "))
+#+end_src
+*** Vertico
+#+begin_src elisp
+  (use-package vertico
+    :init
+    (vertico-mode))
 #+end_src
 ** Avy
 This is a god damn GAME CHANGER
@@ -307,7 +348,7 @@ There was a long silence.
 *** Eglot
 This is an LSP for emacs, aimed to be simple to setup, and who doesn't love that!
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (use-package eglot)
 #+end_src
 
@@ -335,40 +376,47 @@ Swift dev really should be done in xcode but I love emacs too much.
 #+begin_src elisp
     (use-package swift-mode)
 #+end_src
+** Cooklang
+Not a real programing language but fuck it
+#+begin_src elisp
+    (use-package cook-mode
+      :load-path "elisp/cook-mode/")
+#+end_src
 * Appearance
 ** Auto-dark
-*** Theme
+*** Themes
 #+begin_src elisp
   (use-package material-theme)
+  (use-package one-themes)
+  (use-package rainbow-mode)
+  (use-package gruber-darker-theme)
+  (use-package modus-themes)
+  (use-package solo-jazz-theme)
+  (use-package tron-legacy-theme)
 #+end_src
-*** config
+*** Config
 
 I've started to learn to love a light mode, especially during the day when I have lots of bright sunlight in my room. There's a neat ol' package called =auto-dark= which does it based off the MacOS theme. This is good because it means if I change my mind and just want dark mode /it just works/
 
 #+begin_src elisp
   (use-package auto-dark
-    :after material-theme
+    :after one-themes
     :config
     (setq auto-dark--allow-osascript t)
-    (setq auto-dark--dark-theme 'material)
-    (setq auto-dark--light-theme 'material-light))
+    (setq auto-dark--dark-theme 'tron-legacy)
+    (setq auto-dark--light-theme 'solo-jazz))
 #+end_src
 ** Fonts
-First we load the fonts recommended from a reddit post/[[https://gist.github.com/rougier/b15fb6e98fadb6580958b1733659027b][github gist]]
-
 #+begin_src elisp
-    (set-face-attribute 'default nil
-                        :family "Roboto Mono" :weight 'light :height 140)
-    (set-face-attribute 'bold nil
-                        :family "Roboto Mono" :weight 'regular)
-    (set-face-attribute 'italic nil
-                        :family "Victor Mono" :weight 'semilight :slant 'italic)
-    (set-face-attribute 'fixed-pitch nil
-                        :family "Inconsolata")
-    (set-fontset-font t 'unicode
-                      (font-spec :name "Inconsolata" :size 16) nil)
-    (set-fontset-font t '(#xe000 . #xffdd)
-                      (font-spec :name "RobotoMono Nerd Font" :size 12) nil)
+  (set-face-attribute 'default nil
+                      :family "Fantasque Sans Mono" :height 140)
+  (set-face-attribute 'italic nil
+                      :family "Victor Mono" :slant 'italic :weight 'semibold :height 130)
+  (set-face-attribute 'fixed-pitch nil
+                      :family "Fantasque Sans Mono")
+  (set-face-attribute 'variable-pitch nil
+                      :family "SF Pro")
+  (if (fboundp 'mac-auto-operator-composition-mode) (mac-auto-operator-composition-mode)) ;;ligatures
 #+end_src
 ** Other
 *** Menu/tool/scroll bar
