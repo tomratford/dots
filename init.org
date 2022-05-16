@@ -223,7 +223,7 @@ Load projectile
 I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference so I'm trying more every so often.
 
 *** Icomplete
-#+begin_src elisp :tangle no
+#+begin_src elisp
 (icomplete-mode 1)
 #+end_src
 *** Helm
@@ -263,10 +263,14 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
     (setq ivy-count-format "(%d/%d) "))
 #+end_src
 *** Vertico
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package vertico
     :init
-    (vertico-mode))
+    (vertico-mode)
+    ;; Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p))
 #+end_src
 ** Avy
 This is a god damn GAME CHANGER

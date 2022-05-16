@@ -2,10 +2,3 @@
 
 Whilst I was creating my emacs config, I felt it especially useful to find other literal emacs configs to base mine off of. As a result, to 'pay it forward' here is my emacs config. Put under 'dots' because I'm sure as/when I wrote other literal configs I will putt hem in this repo for others to see.
 
-* Notable packages:
-
-[[https://github.com/rougier/nano-theme][Rougier's N Λ N O Theme and modebar]]
-
-[[https://emacs-tree-sitter.github.io][Treesitter-emacs]]
-
-:TODO: Add more packages
