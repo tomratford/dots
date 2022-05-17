@@ -190,6 +190,9 @@ Setup bullet points instead of =*=
 #+end_src
 
 ** All the icons
+:TODO: explore if I actually need this here or if it can move
+
+Even though this is really an appearance we need it here for other loads
 #+begin_src elisp
     (use-package all-the-icons
     :if (display-graphic-p))
@@ -203,7 +206,7 @@ Setup bullet points instead of =*=
 #+end_src
 ** Projectile
 Load projectile
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package projectile
     :custom
     (projectile-project-search-path '("~/Projects" ("~/Exercism/" . 2)))
@@ -223,7 +226,7 @@ Load projectile
 I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference so I'm trying more every so often.
 
 *** Icomplete
-#+begin_src elisp
+#+begin_src elisp :tangle no
 (icomplete-mode 1)
 #+end_src
 *** Helm
@@ -254,14 +257,6 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
     :config
     (helm-projectile-on))
 #+end_src
-*** Counsel/Ivy/Swiper
-#+begin_src elisp :tangle no
-  (use-package counsel
-    :config
-    (ivy-mode 1)
-    (setq use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) "))
-#+end_src
 *** Vertico
 #+begin_src elisp :tangle no
   (use-package vertico
@@ -272,10 +267,57 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
     (setq read-extended-command-predicate
           #'command-completion-default-include-p))
 #+end_src
+
+*** Selectrum
+#+begin_src elisp
+  (use-package selectrum
+    :config
+    (selectrum-mode +1))
+#+end_src
+
+*** Maginalia
+#+begin_src elisp
+  (use-package marginalia
+    ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+    :bind (:map minibuffer-local-map
+                ("M-A" . marginalia-cycle))
+
+    ;; The :init configuration is always executed (Not lazy!)
+    :init
+
+    ;; Must be in the :init section of use-package such that the mode gets
+    ;; enabled right away. Note that this forces loading the package.
+    (marginalia-mode))
+#+end_src
+
+*** Orderless
+#+begin_src elisp
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))    (completion-category-overrides '((file (styles basic partial-completion))))
+    :config
+    (savehist-mode))
+#+end_src
+
+*** mini-frame
+#+begin_src elisp :tangle no
+  (use-package mini-frame
+    :custom
+    (mini-frame-show-parameters '((top . 0.5)
+                                  (width . 0.7)
+                                  (left . 0.5)
+                                  (height . 0.5)))
+    (child-frame-border-width '(x-frame-parameter . 20))
+    :custom-face
+    (child-frame-border ((nil :background "black")))
+    (resize-mini-frames 1)
+    :config
+    (mini-frame-mode))
+#+end_src
 ** Avy
 This is a god damn GAME CHANGER
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package avy
     :bind
     ("M-g c" . avy-goto-char)
