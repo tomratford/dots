@@ -225,10 +225,6 @@ Load projectile
 ** Autocomplete 
 I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference so I'm trying more every so often.
 
-*** Icomplete
-#+begin_src elisp :tangle no
-(icomplete-mode 1)
-#+end_src
 *** Helm
 #+begin_src elisp :tangle no
   (use-package helm-core)
