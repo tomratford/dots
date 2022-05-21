@@ -152,43 +152,83 @@ These are packages which fit into 2 categories
  + are used by other modes
 
 ** Org
-Org is probably the best example of the main description. The below is mainly taken from the [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el][systemcrafters init.el]].
+Org is probably the best example of the main description. Some of the below is taken from the [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el][systemcrafters init.el]].
 
-Define a function to use as a hook when we enter any org mode file
-
+Define a function to use as a hook when we enter any org mode file.
 #+begin_src elisp
   (defun efs/org-mode-setup ()
     (org-indent-mode)
-    (variable-pitch-mode)) ;;indent the file in a qt way
+    (variable-pitch-mode)) 
 #+end_src
 
-~use-package~ to setup our new org hook. As well as set the ephasis marker and also 
-
+~use-package~ to setup our new org hook. We also demand org is loaded on boot to avoid error messages
 #+begin_src elisp
   (use-package org
+    :demand
     :hook (org-mode . efs/org-mode-setup)
-    :config
-    (setq org-hide-emphasis-markers t)
-    (setq org-ellipsis " ◢")
-    (set-face-attribute 'org-code nil
-                         :inherit 'highlight))
+    :custom
+    ;;edit settings
+    (org-auto-align-tags nil)
+    (org-tags-column 0)
+    (org-catch-invisible-edits 'show-and-error)
+    (org-special-ctrl-a/e t)
+    (org-special)
+    ;;styling
+    (org-ellipses " ◢")
+    (org-hide-emphasis-markers t)
+    (org-pretty-entities t)
+    :custom-face
+    (org-code ((nil :inherit highlight))))
 #+end_src
 
+:DEPRECIATED:
 Setup bullet points instead of =*=
-
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package org-bullets
     :after org
     :hook (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '("●" "▶" "■" "◎" "▷" "▣" "◈" "▪")))
 #+end_src
+:END:
 
 *** Org-roam
-#+begin_src elisp :tangle no
-  (use-package org-roam)
+Org roam is a rudimentary alternative to the paid for Roam research app. The gist is basically around Zettelkasen. Small notes combined together to create a graph of knowledge. 
+#+begin_src elisp
+  (use-package org-roam
+    :demand 
+    :custom
+    (org-roam-directory "~/Roam")
+    (org-roam-dailies-directory "diary/")
+    (org-roam-node-display-template
+     (concat "${title:*} "
+             (propertize "${tags:10}" 'face 'org-tag)))
+    (org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n c" . org-roam-capture)
+           ("C-c n j" . org-roam-dailies-capture-today))
+    :hook
+    (find-file . (lambda ()
+                   (when (org-roam-file-p)
+                     (rename-buffer (org-roam-db--file-title)))))
+    :config
+    (org-roam-db-autosync-mode))
 #+end_src
-
+*** Org-modern
+A "gorgeous" sleek new org mode!!
+#+begin_src elisp
+  (use-package org-modern
+    :after org
+    :config
+    (global-org-modern-mode))
+#+end_src
 ** All the icons
 :TODO: explore if I actually need this here or if it can move
 
@@ -296,19 +336,20 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
 #+end_src
 
 *** mini-frame
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (use-package mini-frame
     :custom
     (mini-frame-show-parameters '((top . 0.5)
-                                  (width . 0.7)
+                                  (width . 0.6)
                                   (left . 0.5)
                                   (height . 0.5)))
-    (child-frame-border-width '(x-frame-parameter . 20))
+    (child-frame-border-width 20)
     :custom-face
     (child-frame-border ((nil :background "black")))
     (resize-mini-frames 1)
     :config
-    (mini-frame-mode))
+    ;(mini-frame-mode)
+    )
 #+end_src
 ** Avy
 This is a god damn GAME CHANGER
@@ -403,7 +444,10 @@ This is an LSP for emacs, aimed to be simple to setup, and who doesn't love that
 My favourite language *deserves* it's own mode
 
 #+begin_src elisp
-  (use-package haskell-mode)
+  (use-package haskell-mode
+    :custom
+    (haskell-font-lock-symbols-alist '(("\\" . "λ")))
+    (haskell-font-lock-symbols t))
 #+end_src
 
 ** Julia Mode
@@ -435,6 +479,7 @@ Not a real programing language but fuck it
   (use-package modus-themes)
   (use-package solo-jazz-theme)
   (use-package tron-legacy-theme)
+  (use-package chocolate-theme)
 #+end_src
 *** Config
 
@@ -445,20 +490,24 @@ I've started to learn to love a light mode, especially during the day when I hav
     :after one-themes
     :config
     (setq auto-dark--allow-osascript t)
-    (setq auto-dark--dark-theme 'tron-legacy)
+    (setq auto-dark--dark-theme 'gruber-darker)
     (setq auto-dark--light-theme 'solo-jazz))
 #+end_src
 ** Fonts
 #+begin_src elisp
-  (set-face-attribute 'default nil
-                      :family "Fantasque Sans Mono" :height 140)
-  (set-face-attribute 'italic nil
-                      :family "Victor Mono" :slant 'italic :weight 'semibold :height 130)
-  (set-face-attribute 'fixed-pitch nil
-                      :family "Fantasque Sans Mono")
-  (set-face-attribute 'variable-pitch nil
-                      :family "SF Pro")
-  (if (fboundp 'mac-auto-operator-composition-mode) (mac-auto-operator-composition-mode)) ;;ligatures
+  (defun tr/set-fonts ()
+    (interactive)
+    (set-face-attribute 'default nil
+                        :family "Fantasque Sans Mono" :height 180)
+    (set-face-attribute 'italic nil
+                        :family "Victor Mono" :slant 'italic :weight 'semibold :height 155)
+    (set-face-attribute 'fixed-pitch nil
+                        :family "Fantasque Sans Mono")
+    (set-face-attribute 'variable-pitch nil
+                        :family "SF Pro"))
+  (tr/set-fonts)
+  ;;ligatures
+  (if (fboundp 'mac-auto-operator-composition-mode) (mac-auto-operator-composition-mode)) 
 #+end_src
 ** Other
 *** Menu/tool/scroll bar
