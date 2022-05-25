@@ -241,6 +241,7 @@ Even though this is really an appearance we need it here for other loads
       :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
 ** Dired
+This just enables a single dired
 #+begin_src elisp
   (put 'dired-find-alternate-file 'disabled nil)
 #+end_src
@@ -263,7 +264,14 @@ Load projectile
                                       :test-suffix "Tests"))
 #+end_src
 ** Autocomplete 
-I'm having a mild crisis when it comes to these. I used =ido= but more out of ignorance then preference so I'm trying more every so often.
+It took me a long time to find a completion I liked:
+ + I didn't want to use Ido because I felt like I hadn't explored the other options
+ + Ivy's setup was not intuitive enough and I didn't enjoy the minibuffer interaction
+ + Helm had all the customisation but also broke *a lot* and was generally just annoying
+ + Icomplete was simple but too minimalist
+I am currently using the Selectrum, Maginalia and Orderless stack. I might use Consult & Embark but right now I don't need them.
+The only thing I miss is that I want backspace to delete a whole directory so if you know how let me know.
+I also dabbled in mini-frames for completion for my laptop but I'm also trying to use a real monitor for my "dev" work so it's less important.
 
 *** Helm
 #+begin_src elisp :tangle no
@@ -335,6 +343,42 @@ I'm having a mild crisis when it comes to these. I used =ido= but more out of ig
     (savehist-mode))
 #+end_src
 
+*** Corfu
+#+begin_src elisp
+  (use-package corfu
+    ;; Optional customizations
+    :custom
+    (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+    (corfu-auto t)                 ;; Enable auto completion
+    (corfu-separator ?\s)          ;; Orderless field separator
+    (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+    ;; (corfu-quit-no-match nil)   ;; quit if there is no match
+    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    (corfu-preselect-first nil)    ;; Disable candidate preselection
+    ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+    ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+    ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+    ;; Use TAB for cycling, default is `corfu-complete'.
+    :bind
+    (:map corfu-map
+          ("TAB" . corfu-next)
+          ([tab] . corfu-next)
+          ("S-TAB" . corfu-previous)
+          ([backtab] . corfu-previous))
+
+    ;; Enable Corfu only for certain modes.
+    ;; :hook ((prog-mode . corfu-mode)
+    ;;        (shell-mode . corfu-mode)
+    ;;        (eshell-mode . corfu-mode))
+
+    ;; Recommended: Enable Corfu globally.
+    ;; This is recommended since Dabbrev can be used globally (M-/).
+    ;; See also `corfu-excluded-modes'.
+    :config
+    (global-corfu-mode))
+#+end_src
+
 *** mini-frame
 #+begin_src elisp
   (use-package mini-frame
@@ -374,10 +418,9 @@ I like the rectangle mode in emacs, but I do miss multiple cursors in the way th
 
 #+begin_src elisp
   (use-package multiple-cursors
-    :bind (("C-c m c" . 'mc/edit-lines)
-           ("C-c m s" . 'mc/mark-next-like-this)
-           ("C-c m r" . 'mc/mark-previous-like-this)
-           ("C-c m a" . 'mc/mark-all-like-this)))
+    :bind (("C-." . 'mc/mark-next-like-this)
+           ("C->" . 'mc/mark-previous-like-this)
+           ("C-M-." . 'mc/mark-all-like-this)))
 #+end_src
  
 ** Yasnippet
