@@ -346,14 +346,15 @@ I also dabbled in mini-frames for completion for my laptop but I'm also trying t
 *** Corfu
 #+begin_src elisp
   (use-package corfu
+    :demand
     ;; Optional customizations
     :custom
     (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
     (corfu-auto t)                 ;; Enable auto completion
     (corfu-separator ?\s)          ;; Orderless field separator
-    (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-    ;; (corfu-quit-no-match nil)   ;; quit if there is no match
-    ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+    (corfu-quit-at-boundary t)     ;; quit at completion boundary
+    (corfu-quit-no-match t)        ;; quit if there is no match
+    (corfu-preview-current nil)    ;; Disable current candidate preview
     (corfu-preselect-first nil)    ;; Disable candidate preselection
     ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
     ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
@@ -472,15 +473,30 @@ There was a long silence.
 /"I suppose,"/ said Pooh, /"that that's why he never understands anything.”/
 
 *** Eglot
-This is an LSP for emacs, aimed to be simple to setup, and who doesn't love that!
+I have eglot /just in case/ but I'm not a fan of it's invasion of the minbuffer. Plus LSP-mode w/ LSP-UI gives me a full IDE experience out of the box and additonal mouse support (which is nice)
 
 #+begin_src elisp
   (use-package eglot)
 #+end_src
 
 *** LSP-mode
+I used this before and it was awful to setup, now it just kind of worked which is bizarre.
 
-:TODO: Last time I tried to do this resulting in pain, and suffering
+#+begin_src elisp
+  (use-package lsp-mode
+    :custom
+    (lsp-keymap-prefix "C-c l")
+    (lsp-completion-provider :none) ;; use default (i.e corfu)
+    :init
+    (defun tr/lsp-mode-setup-completion ()
+      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+            '(orderless))) ;;use orderless
+    :hook
+    (lsp-completion-mode . tr/lsp-mode-setup-completion)
+    (haskell-mode . lsp-deferred)
+    :commands lsp)
+  (use-package lsp-ui :commands lsp-ui-mode)
+#+end_src
 
 ** Haskell Mode
 
@@ -491,6 +507,12 @@ My favourite language *deserves* it's own mode
     :custom
     (haskell-font-lock-symbols-alist '(("\\" . "λ")))
     (haskell-font-lock-symbols t))
+
+  (use-package lsp-haskell
+    :after lsp-mode
+    :hook
+    (haskell-mode . lsp)
+    (haskell-literate-mode . lsp))
 #+end_src
 
 ** Julia Mode
@@ -515,14 +537,17 @@ Not a real programing language but fuck it
 ** Auto-dark
 *** Themes
 #+begin_src elisp
-  (use-package material-theme)
-  (use-package one-themes)
-  (use-package rainbow-mode)
-  (use-package gruber-darker-theme)
-  (use-package modus-themes)
-  (use-package solo-jazz-theme)
-  (use-package tron-legacy-theme)
-  (use-package chocolate-theme)
+          (use-package material-theme)
+          (use-package one-themes)
+          (use-package rainbow-mode)
+          (use-package gruber-darker-theme)
+          (use-package modus-themes)
+          (use-package solo-jazz-theme
+            :load-path "elisp/solo-jazz-emacs-theme/"
+            :init
+            (add-to-list 'custom-theme-load-path "elisp/solo-jazz-emacs-theme/"))
+          (use-package tron-legacy-theme)
+          (use-package chocolate-theme)
 #+end_src
 *** Config
 
