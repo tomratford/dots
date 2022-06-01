@@ -178,7 +178,7 @@ Define a function to use as a hook when we enter any org mode file.
     (org-hide-emphasis-markers t)
     (org-pretty-entities t)
     :custom-face
-    (org-code ((nil :inherit highlight))))
+    (org-code ((nil :inherit highlight :font "Fantasque Sans Mono"))))
 #+end_src
 
 :DEPRECIATED:
@@ -414,10 +414,24 @@ I have little experience with magit so. Watch this space.
   (use-package magit)
 #+end_src
 
+** Iedit
+
+#+begin_src elisp
+    (use-package iedit
+      :init
+      (defun tr/iedit ()
+        "Run regular iedit unless in LSP mode, then use LSP iedit"
+        (interactive)
+        (if lsp-mode
+            (lsp-iedit-highlights)
+          (iedit-mode)))
+      :bind (("C-;" . tr/iedit)))
+#+end_src
+
 ** Multiple Cursors
 I like the rectangle mode in emacs, but I do miss multiple cursors in the way they function like in vscode. This package doesnt really to this, but it'll do.
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package multiple-cursors
     :bind (("C-." . 'mc/mark-next-like-this)
            ("C->" . 'mc/mark-previous-like-this)
@@ -491,13 +505,20 @@ I used this before and it was awful to setup, now it just kind of worked which i
     (defun tr/lsp-mode-setup-completion ()
       (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
             '(orderless))) ;;use orderless
+    :config
+    (lsp-headerline-breadcrumb-mode -1)
     :hook
     (lsp-completion-mode . tr/lsp-mode-setup-completion)
     (haskell-mode . lsp-deferred)
+    (c-mode . lsp-deferred)
     :commands lsp)
   (use-package lsp-ui :commands lsp-ui-mode)
 #+end_src
-
+** Flycheck
+#+begin_src elisp
+  (use-package flycheck
+    :init (global-flycheck-mode))
+#+end_src
 ** Haskell Mode
 
 My favourite language *deserves* it's own mode
@@ -567,8 +588,8 @@ I've started to learn to love a light mode, especially during the day when I hav
     (interactive)
     (set-face-attribute 'default nil
                         :family "Fantasque Sans Mono" :height 180)
-    (set-face-attribute 'italic nil
-                        :family "Victor Mono" :slant 'italic :weight 'semibold :height 155)
+    ;; (set-face-attribute 'italic nil
+    ;;                     :family "Victor Mono" :slant 'italic :weight 'semibold :height 155)
     (set-face-attribute 'fixed-pitch nil
                         :family "Fantasque Sans Mono")
     (set-face-attribute 'variable-pitch nil
