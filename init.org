@@ -4,10 +4,11 @@
 #+STARTUP: overview
 
 :TODO: Replace ~:config~ instances with ~:custom~ and ~:custom-faces~
+:TODO: migrate to straight to improve reproducability
 
 * Basic Settings
 
-These are the basic settings which I want active for all of my emacs. Firstly we obviously need MELPA and use-package. 
+These are the basic settings which I want active for all of my emacs. Firstly we obviously need MELPA and use-package.
 
 #+begin_src elisp
   (require 'package)
@@ -16,9 +17,9 @@ These are the basic settings which I want active for all of my emacs. Firstly we
 
   (package-initialize)
 #+end_src
-  
+
 Now we bootstrap `use-package` and load it. `use-package-always-ensure t` Ensures we always have every package installed when we load it.
-  
+
 #+begin_src elisp
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -34,7 +35,7 @@ Now we bootstrap `use-package` and load it. `use-package-always-ensure t` Ensure
 Now we can dance.
 
 ** Customfile
-   
+
 Not a fan of customise variable, it clogs up and makes your init.el look awful.
 let it be gone (or hidden).
 Whilst we're here lets just make themes safe (I only load 2 anyways)
@@ -43,7 +44,7 @@ Whilst we're here lets just make themes safe (I only load 2 anyways)
   (setq custom-file "~/.emacs.d/custom.el")
   (setq custom-safe-themes t)
 #+end_src
-   
+
 ** Autosaving
 
 Lets put backups and auto-saves somewhere smart.
@@ -52,7 +53,7 @@ Lets put backups and auto-saves somewhere smart.
   (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
   (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
 #+end_src
-  
+
 ** Yes, no, maybe?
 
 I think y/n will suffice
@@ -91,7 +92,7 @@ I think we can make the frame look cooler
 #+end_src
 
 ** Set default modes
-   
+
 #+begin_src elisp
   (setq initial-major-mode 'text-mode)
   (setq default-major-mode 'text-mode)
@@ -120,13 +121,13 @@ Not really sure what these do but they seem fine?
 #+begin_src elisp
   (setq confirm-nonexistent-file-or-buffer nil)
 #+end_src
- 
+
 ** No tabs
-   
+
 #+begin_src elisp
   (setq-default indent-tabs-mode nil)
 #+end_src
-   
+
 ** Parens
 #+begin_src elisp
   (show-paren-mode)
@@ -158,7 +159,7 @@ Define a function to use as a hook when we enter any org mode file.
 #+begin_src elisp
   (defun efs/org-mode-setup ()
     (org-indent-mode)
-    (variable-pitch-mode)) 
+    (variable-pitch-mode))
 #+end_src
 
 ~use-package~ to setup our new org hook. We also demand org is loaded on boot to avoid error messages
@@ -194,10 +195,10 @@ Setup bullet points instead of =*=
 :END:
 
 *** Org-roam
-Org roam is a rudimentary alternative to the paid for Roam research app. The gist is basically around Zettelkasen. Small notes combined together to create a graph of knowledge. 
+Org roam is a rudimentary alternative to the paid for Roam research app. The gist is basically around Zettelkasen. Small notes combined together to create a graph of knowledge.
 #+begin_src elisp
   (use-package org-roam
-    :demand 
+    :demand
     :custom
     (org-roam-directory "~/Roam")
     (org-roam-dailies-directory "diary/")
@@ -264,7 +265,7 @@ Load projectile
                                       :run "swift run"
                                       :test-suffix "Tests"))
 #+end_src
-** Autocomplete 
+** Autocomplete
 It took me a long time to find a completion I liked:
  + I didn't want to use Ido because I felt like I hadn't explored the other options
  + Ivy's setup was not intuitive enough and I didn't enjoy the minibuffer interaction
@@ -438,7 +439,7 @@ I like the rectangle mode in emacs, but I do miss multiple cursors in the way th
            ("C->" . 'mc/mark-previous-like-this)
            ("C-M-." . 'mc/mark-all-like-this)))
 #+end_src
- 
+
 ** Yasnippet
 :TODO: This one requires a lot more setup than previous ones. Most likely a bigger task.
 First lets load the main package, and then a few supplementary snippet packages
@@ -478,8 +479,12 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
 #+end_src
 ** Tempel
 This is an alternative snippet library. I find [[yasnippet][yasnippet]] to be a bit restrictive in some respects and this feels like a fun alternative.
-#+begin_src elisp
+#+begin_src elisp :var initFile=(buffer-file-name)
   (use-package tempel
+    ;; :bind
+    ;; (("TAB" . tempel-expand)
+    ;;  ([tab] . tempel-expand))
+
     :init
 
     ;; Setup completion at point
@@ -499,7 +504,7 @@ This is an alternative snippet library. I find [[yasnippet][yasnippet]] to be a 
     (add-hook 'text-mode-hook 'tempel-setup-capf)
 
     :custom
-    (tempel-path)
+    (tempel-path (concat (file-name-directory initFile) "tempel"))
 
     )
 #+end_src
@@ -582,6 +587,21 @@ Not a real programing language but fuck it
     (use-package cook-mode
       :load-path "elisp/cook-mode/")
 #+end_src
+** C
+:c-mode:
+I don't actually need any extra packages for C yet but I want to set the compile command.
+#+begin_src elisp
+  (require 'compile)
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (unless (file-exists-p "Makefile")
+                (let ((file (file-name-nondirectory buffer-file-name)))
+                  (setq-local compile-command
+                              ;; clang -Wall -lm -o NAME NAME.c
+                              (format "clang -Wall -lm -o %s %s"
+                                      (file-name-sans-extension file)
+                                      file))))))
+ #+end_src
 * Appearance
 ** Auto-dark
 *** Themes
@@ -624,9 +644,9 @@ I've started to learn to love a light mode, especially during the day when I hav
                         :family "SF Pro"))
   (tr/set-fonts)
   ;;ligatures
-  (if (fboundp 'mac-auto-operator-composition-mode) (mac-auto-operator-composition-mode)) 
+  (if (fboundp 'mac-auto-operator-composition-mode) (mac-auto-operator-composition-mode))
 #+end_src
-** Other
+** Defaults
 *** Menu/tool/scroll bar
 Controversially I use =menu-bar-mode= because it works a lot better on the MacOS port of emacs. However I dont use =tool-bar-mode= nor =scroll-bar-mode= so these can go.
 
@@ -652,7 +672,7 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
         :type 'list
         :version "green")
       :config
-      (setq display-line-numbers 'relative)   
+      (setq display-line-numbers 'relative)
       (defun display-line-numbers--turn-on ()
         "Turn on line numbers except for certain major modes.
   Exempt major modes are defined in `display-line-numbers-exempt-modes'."
@@ -663,16 +683,10 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
 #+end_src
 ** Mode-line
 *** Minions
-#+begin_src elisp tangle: yes
+#+begin_src elisp
       (use-package minions
         :config
-        (minions-mode)
-        :custom
-        (minions-mode-line-lighter ""))
-#+end_src
-*** Delight
-#+begin_src elisp tangle: no
-  (use-package delight)
+        (minions-mode))
 #+end_src
 *** Doom-modeline
 #+begin_src elisp
@@ -681,5 +695,16 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
   :custom
   (doom-modeline-height 15 "height")
   (doom-modeline-minor-modes t "show minor modes")
-  :init (doom-modeline-mode 1))
+  ;; display time in modeline, not a doom-modeline feature
+  (display-time-format "%R") ;; equivalent %H:%M
+  (display-time-default-load-average nil)
+  :init
+  (doom-modeline-mode 1)
+  ;; display time in modeline, not a doom-modeline feature
+  (display-time-mode 1))
+#+end_src
+** SVG-tag-mode
+make emacs even /more/ pretty
+#+begin_src elisp
+  u
 #+end_src
