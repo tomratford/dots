@@ -214,13 +214,16 @@ Org roam is a rudimentary alternative to the paid for Roam research app. The gis
            ("C-c n f" . org-roam-node-find)
            ("C-c n g" . org-roam-graph)
            ("C-c n i" . org-roam-node-insert)
-           ("C-c n c" . org-roam-capture)
-           ("C-c n j" . org-roam-dailies-capture-today))
+           ("C-c n c" . org-roam-capture))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
     :hook
     (find-file . (lambda ()
                    (when (org-roam-file-p)
-                     (rename-buffer (org-roam-db--file-title)))))
+                     (rename-buffer (org-roam-db--file-title))
+                     (setq-local doom-modeline-buffer-file-name-style 'buffer-name))))
     :config
+    (require 'org-roam-dailies)
     (org-roam-db-autosync-mode))
 #+end_src
 *** Org-modern
@@ -275,34 +278,6 @@ I am currently using the Selectrum, Maginalia and Orderless stack. I might use C
 The only thing I miss is that I want backspace to delete a whole directory so if you know how let me know.
 I also dabbled in mini-frames for completion for my laptop but I'm also trying to use a real monitor for my "dev" work so it's less important.
 
-*** Helm
-#+begin_src elisp :tangle no
-  (use-package helm-core)
-
-  (use-package helm
-    :requires helm-core
-    :demand t
-    :custom
-    ;;(helm-display-header-line nil "remove 'hit C-j for hit1, hit2...' text")
-    (helm-display-function 'helm-display-buffer-in-own-frame)
-    (helm-allow-mouse 1 "use mouse in helm")
-    (helm-mode-fuzzy-match t "fuzzy finding #1")
-    (helm-completion-in-region-fuzzy-match t "fuzzy finding #2")
-    (helm-display-buffer-reuse-frame t)
-    :bind (("C-x b" . helm-buffers-list)
-           ("M-x" . helm-M-x)
-           ("C-x r b" . helm-bookmarks)
-           ("C-x C-f" . helm-find-files)
-           ("C-h a" . helm-apropos)
-           ("M-y" . helm-show-kill-ring))
-    :config
-    (helm-mode 1))
-
-  (use-package helm-projectile
-    :requires projectile
-    :config
-    (helm-projectile-on))
-#+end_src
 *** Vertico
 #+begin_src elisp :tangle no
   (use-package vertico
@@ -398,17 +373,6 @@ I also dabbled in mini-frames for completion for my laptop but I'm also trying t
     ;(mini-frame-mode)
     )
 #+end_src
-** Avy
-This is a god damn GAME CHANGER
-
-#+begin_src elisp :tangle no
-  (use-package avy
-    :bind
-    ("M-g c" . avy-goto-char)
-    ("M-g t" . avy-goto-char-timer)
-    ("M-g f" . avy-goto-line)
-    ("M-g s" . avy-isearch))
-#+end_src
 ** Magit
 I have little experience with magit so. Watch this space.
 
@@ -419,21 +383,13 @@ I have little experience with magit so. Watch this space.
 ** Iedit
 
 #+begin_src elisp
-    (use-package iedit
-      :init
-      (defun tr/iedit ()
-        "Run regular iedit unless in LSP mode, then use LSP iedit"
-        (interactive)
-        (if lsp-mode
-            (lsp-iedit-highlights)
-          (iedit-mode)))
-      :bind (("C-;" . tr/iedit)))
+    (use-package iedit)
 #+end_src
 
 ** Multiple Cursors
 I like the rectangle mode in emacs, but I do miss multiple cursors in the way they function like in vscode. This package doesnt really to this, but it'll do.
 
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (use-package multiple-cursors
     :bind (("C-." . 'mc/mark-next-like-this)
            ("C->" . 'mc/mark-previous-like-this)
@@ -477,39 +433,12 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
     (setq dashboard-set-navigator t)
     (dashboard-setup-startup-hook))
 #+end_src
-** Tempel
-This is an alternative snippet library. I find [[yasnippet][yasnippet]] to be a bit restrictive in some respects and this feels like a fun alternative.
-#+begin_src elisp :var initFile=(buffer-file-name)
-  (use-package tempel
-    ;; :bind
-    ;; (("TAB" . tempel-expand)
-    ;;  ([tab] . tempel-expand))
-
-    :init
-
-    ;; Setup completion at point
-    (defun tempel-setup-capf ()
-      ;; Add the Tempel Capf to `completion-at-point-functions'.
-      ;; `tempel-expand' only triggers on exact matches. Alternatively use
-      ;; `tempel-complete' if you want to see all matches, but then you
-      ;; should also configure `tempel-trigger-prefix', such that Tempel
-      ;; does not trigger too often when you don't expect it. NOTE: We add
-      ;; `tempel-expand' *before* the main programming mode Capf, such
-      ;; that it will be tried first.
-      (setq-local completion-at-point-functions
-                  (cons #'tempel-expand
-                        completion-at-point-functions)))
-
-    (add-hook 'prog-mode-hook 'tempel-setup-capf)
-    (add-hook 'text-mode-hook 'tempel-setup-capf)
-
-    :custom
-    (tempel-path (concat (file-name-directory initFile) "tempel"))
-
-    )
-#+end_src
+** EAF
+Emacs application framework - Will require straight.el
 * Programming Language
 ** LSP
+
+All Individual LSP servers installs exist under the relevant lang
 
 /“Rabbit's clever,"/ said Pooh thoughtfully.
 /"Yes,"/ said Piglet, /"Rabbit's clever."/
@@ -547,15 +476,12 @@ I used this before and it was awful to setup, now it just kind of worked which i
   (use-package lsp-ui :commands lsp-ui-mode)
 #+end_src
 ** Flycheck
-Again, not a programming language but LSP uses it so
+Again, not a programming language but LSP uses it so it goes here
 #+begin_src elisp
   (use-package flycheck
     :init (global-flycheck-mode))
 #+end_src
 ** Haskell Mode
-
-My favourite language *deserves* it's own mode
-
 #+begin_src elisp
   (use-package haskell-mode
     :custom
@@ -602,6 +528,8 @@ I don't actually need any extra packages for C yet but I want to set the compile
                                       (file-name-sans-extension file)
                                       file))))))
  #+end_src
+** Java
+TBD for Crafting interpreters
 * Appearance
 ** Auto-dark
 *** Themes
@@ -704,7 +632,22 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
   (display-time-mode 1))
 #+end_src
 ** SVG-tag-mode
-make emacs even /more/ pretty
-#+begin_src elisp
-  u
+make emacs even /more/ pretty.
+:NOTE: this doesn't work right now but it looks like it will in the near future with a few PRs
+#+begin_src elisp :tangle no
+  (use-package svg-tag-mode
+    :custom
+    (svg-tag-tags '(("\\(:[A-Z]+:\\)" . ((lambda (tag)
+                                           (svg-tag-make tag
+                                                         :beg 1
+                                                         :end -1
+                                                         :font-family "SF Pro"
+                                                         :margin 0
+                                                         :stroke 0
+                                                         :padding 2
+                                                         :crop-left nil
+                                                         :font-size 16
+                                                         :alignment 0.5))))))
+    :hook
+    (org-mode . svg-tag-mode))
 #+end_src
