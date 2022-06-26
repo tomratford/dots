@@ -1,4 +1,17 @@
-#+TITLE: My Emacs Config
+#+TITLE: My Dotfiles
 
-Whilst I was creating my emacs config, I felt it especially useful to find other literal emacs configs to base mine off of. As a result, to 'pay it forward' here is my emacs config. Put under 'dots' because I'm sure as/when I wrote other literal configs I will putt hem in this repo for others to see.
+* Emacs
+
+Whilst I was creating my emacs config, I felt it especially useful to find other literal emacs configs to base mine off of. As a result, to 'pay it forward' my emacs config is publically available so others can do the same. It it not especially literate but that is a WIP, but it is hopefully clearly laid out and available for you to get some ideas from.
+
+* Nix
+
+I haven't liked [[https://brew.sh][homebrew]] since day 1. I always felt like it was flying by the seat of it's pants and that - whilst it was very user friendly - if my entire machine broke and I needed to reinstall things, it wouldn't necessarily do it how I wanted. The fact that I can just do nothing but install packages and ~brew doctor~ will still list loads of things which are broken just doesn't fill me with joy.
+
+Enter Nix, a package manager who's entire MO is being reproducible. There are 3 main features which I like about Nix:
+ 1. The reproducibility across systems (I also use a NixOS VPS)
+ 1. ~nix-shell~ to 'test run' programs I want to run
+ 1. Managing my R/Python/whatever environments without having to learn a language specific tool
+
+However, Nix also has some of the same issues as emacs. As far as I can tell the design of the language & package manager is relatively fluid and has switched towards the concept of 'nix flakes' which - annoyingly - are unstable features and have very little official documentation. Furthermore there are 2 multiple manuals which all tell you different ways to use nix. Hence I think it is equally useful to make a literate configuration file to help guide others
 
