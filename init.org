@@ -98,24 +98,6 @@ I think we can make the frame look cooler
   (setq default-major-mode 'text-mode)
 #+end_src
 
-** Font lock/type settings
-
-Not really sure what these do but they seem fine?
-
-#+begin_src elisp
-  ;;Moderate font lock
-  (setq font-lock-maximum-decoration nil)
-
-  ;; No limit on font lock
-  (setq font-lock-maximum-size nil)
-
-  ;; No line break space points
-  (setq auto-fill-mode nil)
-
-  ;; Fill column at 80
-  (setq fill-column 80)
-#+end_src
-
 ** No confirmation for visiting files that dont exist
 
 #+begin_src elisp
@@ -420,7 +402,6 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
   (use-package expand-region
     :bind ("C--" . er/expand-region))
 #+end_src
-
 ** Dashboard
 #+begin_src elisp
   (use-package dashboard
@@ -435,6 +416,15 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
 #+end_src
 ** EAF
 Emacs application framework - Will require straight.el
+** Org-auto-tangle
+Because I'm forgetful
+#+begin_src elisp
+  (use-package org-auto-tangle
+    :defer t
+    :custom
+    (org-auto-tangle-default t)
+    :hook (org-mode . org-auto-tangle-mode))
+#+end_src
 * Programming Language
 ** LSP
 
@@ -468,6 +458,7 @@ I used this before and it was awful to setup, now it just kind of worked which i
             '(orderless))) ;;use orderless
     :config
     (lsp-headerline-breadcrumb-mode -1)
+    (add-to-list 'lsp-client-packages 'lsp-racket) ;; Racket server
     :hook
     (lsp-completion-mode . tr/lsp-mode-setup-completion)
     (haskell-mode . lsp-deferred)
@@ -486,7 +477,9 @@ Again, not a programming language but LSP uses it so it goes here
   (use-package haskell-mode
     :custom
     (haskell-font-lock-symbols-alist '(("\\" . "λ")))
-    (haskell-font-lock-symbols t))
+    (haskell-font-lock-symbols t)
+    :hook
+    (haskell-mode . (haskell-indent-mode interactive-haskell-mode)))
 
   (use-package lsp-haskell
     :after lsp-mode
@@ -496,11 +489,15 @@ Again, not a programming language but LSP uses it so it goes here
 #+end_src
 
 ** Julia Mode
+#+begin_src elisp
+  (use-package julia-mode)
+#+end_src
 ** Racket
 #+begin_src elisp
   (use-package racket-mode
-    :config
-    (setq racket-program "/Applications/Racket v8.3/bin/racket"))
+    :config (require 'lsp-racket)
+;    :custom (font-lock-maximum-decoration 3)
+    :hook (racket-mode . lsp))
 #+end_src
 ** Swift
 Swift dev really should be done in xcode but I love emacs too much.
@@ -526,7 +523,8 @@ I don't actually need any extra packages for C yet but I want to set the compile
                               ;; clang -Wall -lm -o NAME NAME.c
                               (format "clang -Wall -lm -o %s %s"
                                       (file-name-sans-extension file)
-                                      file))))))
+                                      file))))
+              (hs-minor-mode)))
  #+end_src
 ** Java
 TBD for Crafting interpreters
