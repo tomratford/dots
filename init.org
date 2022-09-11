@@ -109,6 +109,11 @@ I think we can make the frame look cooler
 #+begin_src elisp
   (setq-default indent-tabs-mode nil)
 #+end_src
+*** Tab widths
+Just on the off chance (looking at you ~go~)
+#+begin_src elisp
+  (setq-default tab-width 4)
+#+end_src
 
 ** Parens
 #+begin_src elisp
@@ -420,7 +425,7 @@ Emacs application framework - Will require straight.el
 Because I'm forgetful
 #+begin_src elisp
   (use-package org-auto-tangle
-    :defer t
+    :after org
     :custom
     (org-auto-tangle-default t)
     :hook (org-mode . org-auto-tangle-mode))
@@ -458,11 +463,14 @@ I used this before and it was awful to setup, now it just kind of worked which i
             '(orderless))) ;;use orderless
     :config
     (lsp-headerline-breadcrumb-mode -1)
-    (add-to-list 'lsp-client-packages 'lsp-racket) ;; Racket server
+    (add-to-list 'lsp-client-packages 'lsp-racket) ;; Racket lsp server
+    ;;(add-to-list 'exec-path (expand-file-name "~/go/bin")) ;; Go lsp server
     :hook
     (lsp-completion-mode . tr/lsp-mode-setup-completion)
     (haskell-mode . lsp-deferred)
     (c-mode . lsp-deferred)
+    (racket-mode . lsp-deferred)
+    (go-mode . lsp-deferred)
     :commands lsp)
   (use-package lsp-ui :commands lsp-ui-mode)
 #+end_src
@@ -528,6 +536,12 @@ I don't actually need any extra packages for C yet but I want to set the compile
  #+end_src
 ** Java
 TBD for Crafting interpreters
+** Go
+Pokemon /go/ to the polls
+#+begin_src elisp
+    (use-package go-mode
+      :after lsp-mode)
+#+end_src
 * Appearance
 ** Auto-dark
 *** Themes
