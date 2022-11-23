@@ -301,8 +301,11 @@ I also dabbled in mini-frames for completion for my laptop but I'm also trying t
 *** Orderless
 #+begin_src elisp
   (use-package orderless
+    :demand
     :custom
-    (completion-styles '(orderless basic))    (completion-category-overrides '((file (styles basic partial-completion))))
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))
+                                     (eglot (styles . (orderless flex)))))
     :config
     (savehist-mode))
 #+end_src
@@ -452,7 +455,7 @@ I have eglot /just in case/ but I'm not a fan of it's invasion of the minbuffer.
 *** LSP-mode
 I used this before and it was awful to setup, now it just kind of worked which is bizarre.
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package lsp-mode
     :custom
     (lsp-keymap-prefix "C-c l")
@@ -476,7 +479,7 @@ I used this before and it was awful to setup, now it just kind of worked which i
 #+end_src
 ** Flycheck
 Again, not a programming language but LSP uses it so it goes here
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package flycheck
     :init (global-flycheck-mode))
 #+end_src
@@ -489,11 +492,11 @@ Again, not a programming language but LSP uses it so it goes here
     :hook
     (haskell-mode . (haskell-indent-mode interactive-haskell-mode)))
 
-  (use-package lsp-haskell
-    :after lsp-mode
-    :hook
-    (haskell-mode . lsp)
-    (haskell-literate-mode . lsp))
+  ;;(use-package lsp-haskell
+  ;;  :after lsp-mode
+  ;;  :hook
+  ;;  (haskell-mode . lsp)
+  ;;  (haskell-literate-mode . lsp))
 #+end_src
 
 ** Julia Mode
@@ -502,10 +505,8 @@ Again, not a programming language but LSP uses it so it goes here
 #+end_src
 ** Racket
 #+begin_src elisp
-  (use-package racket-mode
-    :config (require 'lsp-racket)
-;    :custom (font-lock-maximum-decoration 3)
-    :hook (racket-mode . lsp))
+  (use-package racket-mode)
+  ;;  :config (require 'lsp-racket))
 #+end_src
 ** Swift
 Swift dev really should be done in xcode but I love emacs too much.
@@ -539,8 +540,14 @@ TBD for Crafting interpreters
 ** Go
 Pokemon /go/ to the polls
 #+begin_src elisp
-    (use-package go-mode
-      :after lsp-mode)
+    (use-package go-mode)
+    ;;  :after lsp-mode)
+#+end_src
+** Rust
+#+begin_src elisp
+  (use-package rust-mode
+    :config
+    (add-to-list 'exec-path "~/.cargo/bin"))
 #+end_src
 * Appearance
 ** Auto-dark
