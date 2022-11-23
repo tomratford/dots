@@ -433,6 +433,14 @@ Because I'm forgetful
     (org-auto-tangle-default t)
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
+** Vterm
+To basically make emacs my tmux/screen equivalent.
+#+begin_src elisp
+  (use-package vterm
+    :ensure t
+    :custom
+    (vterm-shell "/opt/homebrew/bin/fish"))
+#+end_src
 * Programming Language
 ** LSP
 
