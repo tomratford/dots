@@ -496,9 +496,9 @@ Again, not a programming language but LSP uses it so it goes here
   (use-package haskell-mode
     :custom
     (haskell-font-lock-symbols-alist '(("\\" . "λ")))
-    (haskell-font-lock-symbols t)
-    :hook
-    (haskell-mode . (haskell-indent-mode interactive-haskell-mode)))
+    (haskell-font-lock-symbols t))
+    ;;:hook
+    ;;(haskell-mode . (haskell-indent-mode interactive-haskell-mode)))
 
   ;;(use-package lsp-haskell
   ;;  :after lsp-mode
@@ -548,14 +548,21 @@ TBD for Crafting interpreters
 ** Go
 Pokemon /go/ to the polls
 #+begin_src elisp
-    (use-package go-mode)
-    ;;  :after lsp-mode)
+    (use-package go-mode
+      :config
+      (add-to-list 'exec-path "~/go/bin")
+      :hook (hs-minor-mode subword-mode))
 #+end_src
 ** Rust
 #+begin_src elisp
   (use-package rust-mode
     :config
     (add-to-list 'exec-path "~/.cargo/bin"))
+#+end_src
+** Nix
+#+begin_src elisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
 #+end_src
 * Appearance
 ** Auto-dark
