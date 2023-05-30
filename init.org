@@ -412,14 +412,29 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
 #+end_src
 ** Dashboard
 #+begin_src elisp
-  (use-package dashboard
+    (defun read-lines (filePath)
+      "Return a list of lines of a file at filePath."
+      (with-temp-buffer
+        (insert-file-contents filePath)
+        (split-string (buffer-string) "\n" t)))
+
+    (use-package dashboard
+      :custom
+      (dashboard-startup-banner 'logo "Use the purple emacs logo")
+      (dashboard-center-content t "Self explanatory")
+      (dashboard-set-heading-icons t "Show icons for each subsection")
+      (dashboard-set-file-icons t "Show icons for each file type")
+      (dashboard-set-init-info t "Show how quick startup was/is")
+      (dashboard-projects-backend 'project-el)
+      (dashboard-items '((recents . 10)
+                         (projects . 10)))
+      (dashboard-footer-icon (all-the-icons-octicon "quote"
+                                                    :height 1.1
+                                                    :v-adjust -0.05
+                                                    :face 'font-lock-keyword-face))
+;;TODO: find a way to include an external file, but at tangle time instead of relying on another file      
+  ;;    (dashboard-footer-messages '("")
     :config
-    (setq dashboard-startup-banner 'logo)
-    (setq dashboard-center-content t)
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-set-file-icons t)
-    (setq dashboard-set-init-info t)
-    (setq dashboard-set-navigator t)
     (dashboard-setup-startup-hook))
 #+end_src
 ** EAF
@@ -548,10 +563,11 @@ TBD for Crafting interpreters
 ** Go
 Pokemon /go/ to the polls
 #+begin_src elisp
-    (use-package go-mode
-      :config
-      (add-to-list 'exec-path "~/go/bin")
-      :hook (hs-minor-mode subword-mode))
+  (use-package go-mode
+    :config
+    (add-to-list 'exec-path "~/go/bin")
+    :hook ((go-mode . hs-minor-mode)
+           (go-mode . subword-mode)))
 #+end_src
 ** Rust
 #+begin_src elisp
@@ -563,6 +579,42 @@ Pokemon /go/ to the polls
 #+begin_src elisp
   (use-package nix-mode
     :mode "\\.nix\\'")
+#+end_src
+** Typescript
+Setup web mode
+#+begin_src elisp
+  (use-package typescript-mode
+    :mode ("\\.tsx?\\'" . typescript-mode)
+    :custom
+    (typescript-indent-level 2))
+
+  ;; ensure nice compilation messages
+  (require 'ansi-color)
+  (defun colorize-compilation-buffer ()
+    (ansi-color-apply-on-region compilation-filter-start (point-max)))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+#+end_src
+Typescript interactive development environment 
+#+begin_src elisp tangle: no
+  (use-package tide
+    :after (web-mode typescript-mode)
+    :hook ((typescript-mode . tide-setup)
+           (typescript-mode . tide-hl-identifier-mode)
+           (before-save . tide-format-before-save)))
+#+end_src
+*** Jade mode (pug)
+Used for creating HTML templates
+#+begin_src elisp
+  (use-package jade-mode)
+#+end_src
+** Svelte
+#+begin_src elisp
+    (use-package svelte-mode)
+#+end_src
+** Python
+#+begin_src elisp
+  (use-package python
+    :interpreter ("python3" . python-mode))
 #+end_src
 * Appearance
 ** Auto-dark
