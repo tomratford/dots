@@ -609,7 +609,7 @@ Used for creating HTML templates
 #+end_src
 ** Svelte
 #+begin_src elisp
-    (use-package svelte-mode)
+  (use-package svelte-mode)
 #+end_src
 ** Python
 #+begin_src elisp
