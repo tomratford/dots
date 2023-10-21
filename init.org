@@ -619,6 +619,10 @@ Used for creating HTML templates
   (use-package python
     :interpreter ("python3" . python-mode))
 #+end_src
+** Clojure
+#+begin_src elisp
+  (use-package clojure-mode)
+#+end_src
 * Appearance
 ** Auto-dark
 *** Themes
