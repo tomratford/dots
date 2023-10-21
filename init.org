@@ -623,6 +623,20 @@ Used for creating HTML templates
 #+begin_src elisp
   (use-package clojure-mode)
 #+end_src
+** TeX
+#+begin_src elisp
+  (use-package tex
+    :ensure auctex
+    :custom
+    (TeX-auto-save t)
+    (TeX-parse-self t)
+    )
+#+end_src
+** R
+Succumbing to peer pressure
+#+begin_src elisp
+  (use-package ess)
+#+end_src
 * Appearance
 ** Auto-dark
 *** Themes
