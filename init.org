@@ -459,6 +459,14 @@ To basically make emacs my tmux/screen equivalent.
     :custom
     (vterm-shell "/opt/homebrew/bin/fish"))
 #+end_src
+** Ispell/flyspell
+Using [[http://hunspell.github.io][hunspell]] and an english dictionary you have to download from [[https://github.com/wooorm/dictionaries/tree/main/dictionaries/en-GB][this github]].
+#+begin_src elisp
+  (use-package ispell
+    :custom
+    (ispell-program-name "hunspell")
+    (ispell-dictionary "en_GB"))
+#+end_src
 * Programming Language
 ** LSP
 
