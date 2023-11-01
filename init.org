@@ -467,6 +467,12 @@ Using [[http://hunspell.github.io][hunspell]] and an english dictionary you have
     (ispell-program-name "hunspell")
     (ispell-dictionary "en_GB"))
 #+end_src
+** docview
+I really only need to change the one thing to make it continuous
+#+begin_src elisp
+  (use-package doc-view
+    :custom (doc-view-continuous t))
+#+end_src
 * Programming Language
 ** LSP
 
