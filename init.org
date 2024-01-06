@@ -580,11 +580,12 @@ TBD for Crafting interpreters
 ** Go
 Pokemon /go/ to the polls
 #+begin_src elisp
-  (use-package go-mode
-    :config
-    (add-to-list 'exec-path "~/go/bin")
-    :hook ((go-mode . hs-minor-mode)
-           (go-mode . subword-mode)))
+    (use-package go-mode
+      :config
+      (add-to-list 'exec-path "~/go/bin")
+      :hook ((go-mode . hs-minor-mode)
+             (go-mode . subword-mode)
+             (go-mode . auto-revert-mode)))
 #+end_src
 ** Rust
 #+begin_src elisp
@@ -715,7 +716,7 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
     (use-package display-line-numbers
       :init
       (defcustom display-line-numbers-exempt-modes
-        '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode org-mode text-mode markdown-mode package-menu-mode racket-repl-mode eww-mode)
+        '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode org-mode text-mode markdown-mode package-menu-mode racket-repl-mode eww-mode doc-view-mode)
         "Major modes on which to disable line numbers."
         :group 'display-line-numbers
         :type 'list
