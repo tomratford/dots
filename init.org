@@ -516,17 +516,17 @@ Succumbing to peer pressure
 ** Auto-dark
 *** Themes
 #+begin_src elisp
-          (use-package material-theme)
-          (use-package one-themes)
-          (use-package rainbow-mode)
-          (use-package gruber-darker-theme)
-          (use-package modus-themes)
-          (use-package solo-jazz-theme
-            :load-path "elisp/solo-jazz-emacs-theme/"
-            :init
-            (add-to-list 'custom-theme-load-path "elisp/solo-jazz-emacs-theme/"))
-          (use-package tron-legacy-theme)
-          (use-package chocolate-theme)
+  (use-package material-theme)
+  (use-package one-themes)
+  (use-package rainbow-mode)
+  (use-package gruber-darker-theme)
+  (use-package modus-themes)
+  ;; For when emacs-30 adds package-vc.el
+  ;; (use-package solo-jazz-theme
+  ;;   :vc (:url "cstby/solo-jazz-emacs-theme/"
+  ;;          :branch "main"))
+  (use-package tron-legacy-theme)
+  (use-package chocolate-theme)
 #+end_src
 *** Config
 
