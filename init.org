@@ -173,60 +173,7 @@ Define a function to use as a hook when we enter any org mode file.
     (org-table ((t :font "Fantasque Sans Mono"))))
 #+end_src
 
-:DEPRECIATED:
-Setup bullet points instead of =*=
-#+begin_src elisp :tangle no
-  (use-package org-bullets
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("●" "▶" "■" "◎" "▷" "▣" "◈" "▪")))
-#+end_src
-:END:
-
-*** Org-roam
-Org roam is a rudimentary alternative to the paid for Roam research app. The gist is basically around Zettelkasen. Small notes combined together to create a graph of knowledge.
-#+begin_src elisp
-  (use-package org-roam
-    :demand
-    :custom
-    (org-roam-directory "~/Roam")
-    (org-roam-dailies-directory "diary/")
-    (org-roam-node-display-template
-     (concat "${title:*} "
-             (propertize "${tags:10}" 'face 'org-tag)))
-    (org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         "* %?"
-         :target (file+head "%<%Y-%m-%d>.org"
-                            "#+title: %<%Y-%m-%d>\n"))))
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n g" . org-roam-graph)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c n c" . org-roam-capture))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :hook
-    (find-file . (lambda ()
-                   (when (org-roam-file-p)
-                     (rename-buffer (org-roam-db--file-title))
-                     (setq-local doom-modeline-buffer-file-name-style 'buffer-name))))
-    :config
-    (require 'org-roam-dailies)
-    (org-roam-db-autosync-mode))
-#+end_src
-*** Org-modern
-A "gorgeous" sleek new org mode!!
-#+begin_src elisp
-  (use-package org-modern
-    :after org
-    :config
-    (global-org-modern-mode))
-#+end_src
 ** All the icons
-:TODO: explore if I actually need this here or if it can move
-
 Even though this is really an appearance we need it here for other loads
 #+begin_src elisp
     (use-package all-the-icons
@@ -239,24 +186,6 @@ Even though this is really an appearance we need it here for other loads
 This just enables a single dired
 #+begin_src elisp
   (put 'dired-find-alternate-file 'disabled nil)
-#+end_src
-** Projectile
-Load projectile
-#+begin_src elisp :tangle no
-  (use-package projectile
-    :custom
-    (projectile-project-search-path '("~/Projects" ("~/Exercism/" . 2)))
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :config
-    (projectile-mode +1)
-    ;; Create custom projectile project checks for ~swift~ packages
-    (projectile-register-project-type 'swift '("Package.swift")
-                                      :project-file "Package.swift"
-                                      :compile "swift build"
-                                      :test "swift test"
-                                      :run "swift run"
-                                      :test-suffix "Tests"))
 #+end_src
 ** Autocomplete
 It took me a long time to find a completion I liked:
@@ -350,22 +279,6 @@ I also dabbled in mini-frames for completion for my laptop but I'm also trying t
     (global-corfu-mode))
 #+end_src
 
-*** mini-frame
-#+begin_src elisp
-  (use-package mini-frame
-    :custom
-    (mini-frame-show-parameters '((top . 0.5)
-                                  (width . 0.6)
-                                  (left . 0.5)
-                                  (height . 0.5)))
-    (child-frame-border-width 20)
-    :custom-face
-    (child-frame-border ((nil :background "black")))
-    (resize-mini-frames 1)
-    :config
-    ;(mini-frame-mode)
-    )
-#+end_src
 ** Magit
 I have little experience with magit so. Watch this space.
 
@@ -492,31 +405,6 @@ I have eglot /just in case/ but I'm not a fan of it's invasion of the minbuffer.
   (use-package eglot)
 #+end_src
 
-*** LSP-mode
-I used this before and it was awful to setup, now it just kind of worked which is bizarre.
-
-#+begin_src elisp :tangle no
-  (use-package lsp-mode
-    :custom
-    (lsp-keymap-prefix "C-c l")
-    (lsp-completion-provider :none) ;; use default (i.e corfu)
-    :init
-    (defun tr/lsp-mode-setup-completion ()
-      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-            '(orderless))) ;;use orderless
-    :config
-    (lsp-headerline-breadcrumb-mode -1)
-    (add-to-list 'lsp-client-packages 'lsp-racket) ;; Racket lsp server
-    ;;(add-to-list 'exec-path (expand-file-name "~/go/bin")) ;; Go lsp server
-    :hook
-    (lsp-completion-mode . tr/lsp-mode-setup-completion)
-    (haskell-mode . lsp-deferred)
-    (c-mode . lsp-deferred)
-    (racket-mode . lsp-deferred)
-    (go-mode . lsp-deferred)
-    :commands lsp)
-  (use-package lsp-ui :commands lsp-ui-mode)
-#+end_src
 ** Flycheck
 Again, not a programming language but LSP uses it so it goes here
 #+begin_src elisp :tangle no
@@ -552,12 +440,6 @@ Again, not a programming language but LSP uses it so it goes here
 Swift dev really should be done in xcode but I love emacs too much.
 #+begin_src elisp
     (use-package swift-mode)
-#+end_src
-** Cooklang
-Not a real programing language but fuck it
-#+begin_src elisp
-    (use-package cook-mode
-      :load-path "elisp/cook-mode/")
 #+end_src
 ** C
 :c-mode:
@@ -752,24 +634,4 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
   (doom-modeline-mode 1)
   ;; display time in modeline, not a doom-modeline feature
   (display-time-mode 1))
-#+end_src
-** SVG-tag-mode
-make emacs even /more/ pretty.
-:NOTE: this doesn't work right now but it looks like it will in the near future with a few PRs
-#+begin_src elisp :tangle no
-  (use-package svg-tag-mode
-    :custom
-    (svg-tag-tags '(("\\(:[A-Z]+:\\)" . ((lambda (tag)
-                                           (svg-tag-make tag
-                                                         :beg 1
-                                                         :end -1
-                                                         :font-family "SF Pro"
-                                                         :margin 0
-                                                         :stroke 0
-                                                         :padding 2
-                                                         :crop-left nil
-                                                         :font-size 16
-                                                         :alignment 0.5))))))
-    :hook
-    (org-mode . svg-tag-mode))
 #+end_src
