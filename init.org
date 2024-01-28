@@ -17,7 +17,7 @@ These are the basic settings which I want active for all of my emacs. Firstly we
   (package-initialize)
 #+end_src
 
-Now we bootstrap `use-package` and load it. `use-package-always-ensure t` Ensures we always have every package installed when we load it.
+Now we bootstrap =use-package= and load it. =use-package-always-ensure t= Ensures we always have every package installed when we load it.
 
 #+begin_src elisp
   (unless (package-installed-p 'use-package)
