@@ -3,7 +3,6 @@
 #+PROPERTY: header-args :comments link :tangle ~/.emacs.d/init.el :tangle-mode (identity #o444)
 #+STARTUP: overview
 
-:TODO: Replace ~:config~ instances with ~:custom~ and ~:custom-faces~
 :TODO: migrate to straight to improve reproducability
 
 * Basic Settings
