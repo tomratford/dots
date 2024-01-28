@@ -534,11 +534,12 @@ I've started to learn to love a light mode, especially during the day when I hav
 
 #+begin_src elisp
   (use-package auto-dark
-    :after one-themes
+    :custom
+    (auto-dark-allow-osascript t)
+    (auto-dark-dark-theme 'gruber-darker)
+    (auto-dark-light-theme 'solo-jazz)
     :config
-    (setq auto-dark--allow-osascript t)
-    (setq auto-dark--dark-theme 'gruber-darker)
-    (setq auto-dark--light-theme 'solo-jazz))
+    (auto-dark-mode 1))
 #+end_src
 ** Fonts
 #+begin_src elisp
