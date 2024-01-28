@@ -375,6 +375,12 @@ I really only need to change the one thing to make it continuous (so when I view
   (use-package doc-view
     :custom (doc-view-continuous t))
 #+end_src
+** Flycheck
+Used by eglot amongst other things. A generic package
+#+begin_src elisp :tangle no
+  (use-package flycheck
+    :init (global-flycheck-mode))
+#+end_src
 * Programming Language
 ** LSP
 *** Eglot
@@ -383,12 +389,6 @@ eglot is base emacs and just works. It gives me everything I could need with res
   (use-package eglot)
 #+end_src
 
-** Flycheck
-Again, not a programming language but LSP uses it so it goes here
-#+begin_src elisp :tangle no
-  (use-package flycheck
-    :init (global-flycheck-mode))
-#+end_src
 ** Haskell Mode
 #+begin_src elisp
   (use-package haskell-mode
