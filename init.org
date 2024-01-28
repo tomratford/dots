@@ -71,13 +71,6 @@ I'm going to replace the startup screens with =dashboard.el,= so this is irrelev
   (setq ihibit-startup-screen t)
 #+end_src
 
-** Frame title
-
-I think we can make the frame look cooler
-#+begin_src elisp
-  (setq frame-title-format '("" "%b" " / Emacs"))
-#+end_src
-
 ** No cursor in inactive windows
 Makes it easier to tell if you are in a window or not
 #+begin_src elisp
@@ -620,3 +613,9 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
   ;; display time in modeline, not a doom-modeline feature
   (display-time-mode 1))
 #+end_src
+** Rename frame title
+
+#+begin_src elisp
+  (setq frame-title-format '("" "%b" " / Emacs"))
+#+end_src
+
