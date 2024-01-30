@@ -162,6 +162,15 @@ Define a function to use as a hook when we enter any org mode file.
     (org-table ((t :font "Fantasque Sans Mono"))))
 #+end_src
 
+*** Org-modern
+This makes org mode have nice styling with respect to headers, tags, and code blocks
+#+begin_src elisp
+  (use-package org-modern
+    :after org
+    :config
+    (global-org-modern-mode))
+#+end_src
+
 ** All the icons
 Even though this is really an appearance we need it here for other loads
 #+begin_src elisp
