@@ -390,6 +390,17 @@ Used by eglot amongst other things. A generic package
   (use-package flycheck
     :init (global-flycheck-mode))
 #+end_src
+** Polymode
+Multiple major modes in a buffer
+#+begin_src elisp
+  (use-package poly-markdown
+    :config
+    (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+    :custom
+    (markdown-enable-math t))
+#+end_src
+
 * Programming Language
 ** LSP
 *** Eglot
