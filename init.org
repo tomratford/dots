@@ -525,7 +525,14 @@ Used for creating HTML templates
     :custom
     (TeX-auto-save t)
     (TeX-parse-self t)
+    (TeX-electric-sub-and-superscript t)
+    :hook
+    (latex-mode . TeX-fold-mode)
+    (latex-mode . prettify-symbols-mode)
     )
+  (use-package latex-preview-pane
+    :config
+    (latex-preview-pane-enable))
 #+end_src
 ** R
 Using emacs speaks statistics (added so I can ctrl-s easier).
