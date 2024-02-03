@@ -353,12 +353,12 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
 ** EAF
 Emacs application framework - Will require straight.el
 ** Org-auto-tangle
-Because I'm forgetful
+This has to be set with =:config= instead of =:custom=, else it wont work.
 #+begin_src elisp
   (use-package org-auto-tangle
     :after org
-    :custom
-    (org-auto-tangle-default t)
+    :config
+    (setq org-auto-tangle-default t)
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 ** Vterm
