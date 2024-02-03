@@ -528,6 +528,7 @@ Used for creating HTML templates
     )
 #+end_src
 ** R
+Using emacs speaks statistics (added so I can ctrl-s easier).
 Trying to migrate my R development to emacs, so that I can write R/TeX easily for when I get to my masters dissertation in June.
 #+begin_src elisp
   (use-package ess
@@ -550,9 +551,9 @@ Trying to migrate my R development to emacs, so that I can write R/TeX easily fo
        (slot . 1)
        (window-width . 0.4)
        (reusable-frames . nil)))
-    :hook ((inferior-ess-r-mode . (lambda () (text-scale-decrease 1)))
-           (ess-r-help-mode . (lambda () (text-scale-decrease 2)))
-           (ess-r-post-run . (lambda () (ess-help "lm") (ess-rdired)))))
+    :hook ((inferior-ess-r-mode . (lambda () (text-scale-decrease 1))) ; Make font smaller so it doesn't split over lines etc...
+           (ess-r-help-mode . (lambda () (text-scale-decrease 2))) ; Make font smaller so it can all fit on one line properly
+           (ess-r-post-run . (lambda () (ess-help "lm") (ess-rdired))))) ;; load the R help and dired buffers automatically.
 #+end_src
 * Appearance
 ** Auto-dark
