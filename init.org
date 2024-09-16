@@ -365,7 +365,7 @@ ie ~test("abc efg")~. If had our cursor on the ~c~ in ~abc~ then it would expand
                                                     :height 1.1
                                                     :v-adjust -0.05
                                                     :face 'font-lock-keyword-face))
-;;TODO: find a way to include an external file, but at tangle time instead of relying on another file      
+;;TODO: find a way to include an external file, but at tangle time instead of relying on another file
   ;;    (dashboard-footer-messages '("")
     :config
     (dashboard-setup-startup-hook))
@@ -401,8 +401,8 @@ Using [[http://hunspell.github.io][hunspell]] and an english dictionary you have
 doc-view is for viewing pdf files, which is linked to my latex setup.
 I really only need to change the one thing to make it continuous (so when I view PDFs I can scroll easily)
 #+begin_src elisp
-  (use-package doc-view
-    :custom (doc-view-continuous t))
+    (use-package doc-view
+      :custom (doc-view-continuous t))
 #+end_src
 ** Flycheck
 Used by eglot amongst other things. A generic package
@@ -512,7 +512,7 @@ Setup web mode
     (ansi-color-apply-on-region compilation-filter-start (point-max)))
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 #+end_src
-Typescript interactive development environment 
+Typescript interactive development environment
 #+begin_src elisp tangle: no
   (use-package tide
     :after (web-mode typescript-mode)
@@ -542,6 +542,8 @@ Used for creating HTML templates
 #+begin_src elisp
   (use-package tex
     :ensure auctex
+    :config
+    (setq-default TeX-master nil)
     :custom
     (TeX-auto-save t)
     (TeX-parse-self t)
@@ -702,4 +704,3 @@ Line numbers are obviously a must, but I'm also partial to /not/ having them som
 #+begin_src elisp
   (setq frame-title-format '("" "%b" " / Emacs"))
 #+end_src
-
