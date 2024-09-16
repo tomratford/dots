@@ -558,9 +558,15 @@ Used for creating HTML templates
 Using emacs speaks statistics (added so I can ctrl-s easier).
 Trying to migrate my R development to emacs, so that I can write R/TeX easily for when I get to my masters dissertation in June.
 #+begin_src elisp
+  (defun tr/insert-r-chunk (header)
+    "Insert an r-chunk in markdown mode. Necessary due to interactions between polymode and yas snippet"
+    (interactive "sHeader: ")
+    (insert (concat "```{r " header "}\n\n```"))
+    (forward-line -1))
   (use-package ess
     :custom
-    display-buffer-alist `(("^\\*R Dired"
+    (ess-can-eval-in-background nil) ;; This stops emacs hanging routinely
+    (display-buffer-alist `(("^\\*R Dired"
        (display-buffer-reuse-window display-buffer-in-side-window)
        (side . right)
        (slot . -1)
@@ -577,7 +583,7 @@ Trying to migrate my R development to emacs, so that I can write R/TeX easily fo
        (side . right)
        (slot . 1)
        (window-width . 0.4)
-       (reusable-frames . nil)))
+       (reusable-frames . nil))))
     :hook ((inferior-ess-r-mode . (lambda () (text-scale-decrease 1))) ; Make font smaller so it doesn't split over lines etc...
            (ess-r-help-mode . (lambda () (text-scale-decrease 2))) ; Make font smaller so it can all fit on one line properly
            (ess-r-post-run . (lambda () (ess-help "lm") (ess-rdired))))) ;; load the R help and dired buffers automatically.
