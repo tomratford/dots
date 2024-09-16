@@ -139,6 +139,15 @@ These are packages which fit into 2 categories
  + aren't a programming language
  + are used by any/all programming languages
 
+** Exec-path-from-shell
+Used to get enviroment variables from the shell
+#+begin_src elisp
+  (use-package exec-path-from-shell
+    :custom
+    (exec-path-from-shell-variables '("PATH" "MANPATH" "LEDGER_FILE"))
+    :config
+    (exec-path-from-shell-initialize))
+#+end_src
 ** Org
 Org is probably the best example of the main description. Some of the below is taken from the [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el][systemcrafters init.el]].
 
@@ -573,6 +582,15 @@ Trying to migrate my R development to emacs, so that I can write R/TeX easily fo
            (ess-r-help-mode . (lambda () (text-scale-decrease 2))) ; Make font smaller so it can all fit on one line properly
            (ess-r-post-run . (lambda () (ess-help "lm") (ess-rdired))))) ;; load the R help and dired buffers automatically.
 #+end_src
+** Hledger
+Not a programming language, but my accounting software
+#+begin_src elisp
+  (use-package hledger-mode
+    :mode ("\\.journal\\'" "\\.hledger\\'")
+    :custom
+    (hledger-jfile (getenv "LEDGER_FILE")))
+#+end_src
+
 * Appearance
 ** Auto-dark
 *** Themes
