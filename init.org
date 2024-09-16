@@ -128,6 +128,11 @@ Pressing return feels pointless when killing a saved buffer (in my opinion).
 #+begin_src elisp
   (column-number-mode 1)
 #+end_src
+
+** Bell noise
+#+begin_src elisp
+  (setq ring-bell-function 'ignore)
+#+end_src
 * Global Packages
 
 These are packages which fit into 2 categories
