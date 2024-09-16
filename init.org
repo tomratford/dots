@@ -58,6 +58,12 @@ Lets put backups and auto-saves somewhere smart.
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
+** Don't suspend on ctrl-z
+This crashes emacs
+#+begin_src elisp
+  (global-unset-key "\C-z")
+#+end_src
+
 ** Delete selection upon type
 #+begin_src elisp
   (delete-selection-mode)
