@@ -590,6 +590,13 @@ Trying to migrate my R development to emacs, so that I can write R/TeX easily fo
            (ess-r-help-mode . (lambda () (text-scale-decrease 2))) ; Make font smaller so it can all fit on one line properly
            (ess-r-post-run . (lambda () (ess-help "lm") (ess-rdired))))) ;; load the R help and dired buffers automatically.
 #+end_src
+** Odin
+#+begin_src elisp
+  (use-package odin-mode
+    :load-path "elisp/odin-mode/"
+    :mode ("\\.odin\\'" . odin-mode))
+#+end_src
+
 ** Hledger
 Not a programming language, but my accounting software
 #+begin_src elisp
