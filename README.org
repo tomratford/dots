@@ -4,6 +4,10 @@
 
 Whilst I was creating my emacs config, I felt it especially useful to find other literal emacs configs to base mine off of. As a result, to 'pay it forward' my emacs config is publically available so others can do the same. It it not especially literate but that is a WIP, but it is hopefully clearly laid out and available for you to get some ideas from.
 
+** Installation
 
+I use [[http://belluzj.github.io/fantasque-sans/][Fantasque Sans Mono]] for my fixed-width (i.e. coding) font, and the [[https://developer.apple.com/fonts/][Apple SF Pro font]] for the text in my =.org= files.
 
+My primary themes are the [[https://github.com/cstby/solo-jazz-emacs-theme][Solo Jazz theme]] and [[https://github.com/rexim/gruber-darker-theme][Gruber Darker theme]].
 
+The Solo Jazz theme and [[https://github.com/mattt-b/odin-mode][Odin-mode]] packages must be installed manually into folders in =~/.emacs.d/elisp=.
