@@ -4,12 +4,6 @@
 
 Whilst I was creating my emacs config, I felt it especially useful to find other literal emacs configs to base mine off of. As a result, to 'pay it forward' my emacs config is publically available so others can do the same. It it not especially literate but that is a WIP, but it is hopefully clearly laid out and available for you to get some ideas from.
 
-* Nix
 
-Nix is a package manager who's entire MO is being reproducible. There are 3 main features which I like about Nix:
- 1. The reproducibility across systems - I want my work WSL, my VPSs and my Mac to all have the same settings (where possible)
- 1. ~nix-shell~ to 'test run' programs I may want
- 1. Managing my R/Python/whatever environments without having to learn a language specific tool
 
-However, Nix also has some of the same issues as emacs. As far as I can tell the design of the language & package manager is relatively fluid and has switched towards the concept of 'nix flakes' which - annoyingly - are unstable features and have very little official documentation. Furthermore there are 2 manuals which all tell you different ways to use nix. 
 
